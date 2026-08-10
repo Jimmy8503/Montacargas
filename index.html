@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisión Diaria de Operador - Montacargas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  :root{
+    --bg: #17191c;
+    --panel: #212429;
+    --panel-alt: #2a2e35;
+    --line: #383d46;
+    --yellow: #f5b700;
+    --yellow-dim: #7a5c05;
+    --green: #4c9a5a;
+    --green-dim: #2c3b2d;
+    --red: #d6483c;
+    --red-dim: #402828;
+    --text: #ece9e2;
+    --text-muted: #969ca6;
+    --radius: 10px;
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 60px;
+  }
+
+  .wrap{ max-width: 640px; margin: 0 auto; padding: 18px 16px 40px; }
+
+  .stripe{
+    height: 8px;
+    margin: 26px 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--yellow) 0px, var(--yellow) 12px,
+      #1a1a1a 12px, #1a1a1a 24px
+    );
+    border-radius: 3px;
+    opacity: 0.9;
+  }
+
+  .doc-tag{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .doc-tag .brand{
+    font-family:'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--yellow);
+  }
+  .doc-tag .doc-code{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    border: 1px solid var(--line);
+    padding: 3px 9px;
+    border-radius: 5px;
+  }
+
+  .nameplate{
+    background: var(--panel);
+    border: 2px solid var(--yellow-dim);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .nameplate .label{
+    font-family:'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .nameplate .code{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight:700;
+    color: var(--yellow);
+    letter-spacing: 0.03em;
+  }
+  .nameplate .equipo-nombre{
+    font-family:'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+  select#equipo{
+    background: var(--panel-alt);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 14px;
+  }
+
+  h1{
+    font-family:'Oswald', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 26px;
+    margin: 20px 0 4px;
+    color: var(--text);
+  }
+  .subtitle{
+    color: var(--text-muted);
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+  .nota{
+    background: var(--panel-alt);
+    border-left: 3px solid var(--yellow);
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text-muted);
+    border-radius: 4px;
+    margin-top: 14px;
+  }
+
+  .meta-row{
+    display:flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .meta-field{ flex:1; min-width: 140px; }
+  .meta-field label{
+    display:block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    font-family:'Oswald', sans-serif;
+  }
+  .meta-field input, .meta-field select{
+    width:100%;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+  }
+  .meta-field input[readonly]{
+    background: var(--panel-alt);
+    color: var(--text-muted);
+    cursor: default;
+  }
+  .meta-field input:focus, .meta-field select:focus, select#equipo:focus{
+    outline: 2px solid var(--yellow);
+    outline-offset: 1px;
+  }
+
+  .section-title{
+    font-family:'Oswald', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 18px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    color: var(--text);
+  }
+  .section-sub{
+    font-size: 12.5px;
+    color: var(--text-muted);
+    font-family:'Inter', sans-serif;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+
+  /* Consumibles table */
+  .consumibles{
+    margin-top: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .consumibles-row{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 11px 14px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .consumibles-row:last-child{ border-bottom: none; }
+  .consumibles-row .nombre{
+    font-size: 13.5px;
+    font-weight: 600;
+    flex: 1;
+  }
+  .consumibles-row input{
+    width: 90px;
+    background: var(--panel-alt);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 14px;
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .consumibles-row input:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
+  .consumibles-row .unidad{
+    font-size: 12px;
+    color: var(--text-muted);
+    width: 24px;
+  }
+
+  .item{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-top: 10px;
+    display:flex;
+    align-items:center;
+    gap: 12px;
+  }
+  .item .item-text{
+    flex:1;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  .toggle-group{
+    display:flex;
+    gap:6px;
+    flex-shrink:0;
+  }
+  .toggle-btn{
+    border: 1px solid var(--line);
+    background: var(--panel-alt);
+    color: var(--text-muted);
+    font-family:'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.05em;
+    padding: 9px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    min-width: 52px;
+  }
+  .toggle-btn:hover{ border-color: var(--yellow-dim); }
+  .toggle-btn.active-ok{
+    background: var(--green-dim);
+    color: #a4d9ac;
+    border-color: var(--green);
+  }
+  .toggle-btn.active-bad{
+    background: var(--red-dim);
+    color: #f0a9a2;
+    border-color: var(--red);
+  }
+
+  textarea{
+    width:100%;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: var(--radius);
+    padding: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    min-height: 90px;
+    resize: vertical;
+    margin-top: 10px;
+  }
+  textarea:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
+
+  .anomalia-banner{
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    color: #f0a9a2;
+    font-family:'Oswald', sans-serif;
+    font-size: 12.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align:center;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 24px;
+  }
+
+  .submit-btn{
+    width:100%;
+    background: var(--yellow);
+    color: #1a1a1a;
+    border: none;
+    font-family:'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 15px;
+    border-radius: var(--radius);
+    margin-top: 22px;
+    cursor: pointer;
+    transition: filter 0.15s;
+  }
+  .submit-btn:hover{ filter: brightness(1.08); }
+  .submit-btn:disabled{ opacity: 0.5; cursor: default; }
+
+  .status-msg{
+    text-align:center;
+    font-size: 13.5px;
+    margin-top: 12px;
+    min-height: 18px;
+  }
+  .status-msg.ok{ color: #a4d9ac; }
+  .status-msg.err{ color: #f0a9a2; }
+
+  .footer-note{
+    text-align:center;
+    color: var(--text-muted);
+    font-size: 11.5px;
+    margin-top: 34px;
+    line-height: 1.6;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="doc-tag">
+    <div class="brand">Zeomex</div>
+    <div class="doc-code">REP-EXT-02</div>
+  </div>
+
+  <div class="nameplate">
+    <div>
+      <div class="label">Equipo</div>
+      <div class="code" id="equipoDisplay">— seleccionar —</div>
+      <div class="equipo-nombre" id="equipoNombre"></div>
+    </div>
+    <select id="equipo"></select>
+  </div>
+
+  <h1>Revisión diaria de operador</h1>
+  <div class="subtitle">Checklist previo al uso del equipo. Complete cada punto antes de iniciar la actividad.</div>
+  <div class="nota">Antes de iniciar la actividad realice este Check List para garantizar que el equipo se puede utilizar.</div>
+
+  <div class="meta-row">
+    <div class="meta-field">
+      <label>Operador</label>
+      <input type="text" id="operador" placeholder="Nombre completo">
+    </div>
+    <div class="meta-field">
+      <label>No. Económico</label>
+      <input type="text" id="noEconomico" placeholder="Ej. MC01">
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-field">
+      <label>Horómetro inicial</label>
+      <input type="text" id="horInicial" placeholder="0000">
+    </div>
+    <div class="meta-field">
+      <label>Horómetro final</label>
+      <input type="text" id="horFinal" placeholder="0000">
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-field">
+      <label>Fecha</label>
+      <input type="text" id="fecha" readonly>
+    </div>
+    <div class="meta-field">
+      <label>Turno</label>
+      <select id="turno">
+        <option value="">Seleccionar</option>
+        <option value="Turno 1">Turno 1</option>
+        <option value="Turno 2">Turno 2</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="stripe"></div>
+
+  <div class="section-title">Consumibles
+    <span class="section-sub">Cantidad utilizada</span>
+  </div>
+  <div class="consumibles" id="consumibles"></div>
+
+  <div class="stripe"></div>
+
+  <div class="section-title">Puntos generales
+    <span class="section-sub">¿Está trabajando?</span>
+  </div>
+  <div id="generales"></div>
+
+  <div class="stripe"></div>
+
+  <div class="section-title">Criterios de rechazo
+    <span class="section-sub">¿Está en buenas condiciones?</span>
+  </div>
+  <div id="rechazo"></div>
+
+  <div class="anomalia-banner">Reportar anomalía detectada a jefe inmediato</div>
+
+  <div class="section-title" style="margin-top:24px;">Comentarios / reporte de fallas</div>
+  <textarea id="comentarios" placeholder="Describa cualquier falla u observación..."></textarea>
+
+  <button class="submit-btn" id="submitBtn">Guardar revisión</button>
+  <div class="status-msg" id="statusMsg"></div>
+  <div class="footer-note" id="downloadNote">Al guardar, se descarga un archivo de respaldo y se abre tu correo con los datos listos para enviar a mantenimiento@zeomex.com.mx.</div>
+</div>
+
+<script>
+const EQUIPOS = ["MC01-PT-MV","MC02-PT-MV","MC03-PT-MV","MC04-PT-MV","MC05-MN-MV","MC06-MN-MV","MC07-MN-MV","MC08-MN-MV","MC09-MN-MV","MC10-MN-MV"];
+
+const EQUIPO_NOMBRES = {
+  "MC01-PT-MV": "Montacargas Caterpillar Yaritzo (MINA)",
+  "MC02-PT-MV": "Montacargas Caterpillar (segundo) (PATIO)",
+  "MC03-PT-MV": "Montacargas Ingersoll Rand (PATIO)",
+  "MC04-PT-MV": "Montacargas JCB 930",
+  "MC05-MN-MV": "Montacargas de Terreno Case",
+  "MC06-MN-MV": "Montacargas Caterpillar 198",
+  "MC07-MN-MV": "Montacargas Yale (amarillo)",
+  "MC08-MN-MV": "Montacargas Clarck (verde)",
+  "MC09-MN-MV": "Montacargas Eléctrico 1",
+  "MC10-MN-MV": "Montacargas Eléctrico 2"
+};
+
+const CONSUMIBLES = [
+  { id: "aceite_20w50", nombre: "Aceite 20W-50", unidad: "L" },
+  { id: "aceite_hidraulico", nombre: "Aceite hidráulico", unidad: "L" },
+  { id: "anticongelante", nombre: "Anticongelante", unidad: "L" },
+  { id: "diesel", nombre: "Diesel", unidad: "L" }
+];
+
+const GENERALES = [
+  "Compruebe nivel de aceite del motor",
+  "Compruebe nivel de refrigerante en tanque de reposición o radiador",
+  "Inspeccione estado de bandas y mangueras del sistema de enfriamiento",
+  "Compruebe nivel de aceite de la transmisión",
+  "Compruebe nivel de aceite del tanque hidráulico",
+  "Inspeccione estado de calcomanías de señalización",
+  "Verifique nivel de combustible (tanque de gas / carga de batería)"
+];
+
+const RECHAZO = [
+  "Verifique el correcto funcionamiento de frenos de servicio y de estacionamiento.",
+  "Inspeccione por daños o fisuras críticas en componentes del equipo (bandas de motor, ejes, espejos y torre).",
+  "Inspeccione por fugas críticas o derrames de lubricante en el equipo, que se observe mojado o goteando el componente; reportar mangueras con daño.",
+  "Inspeccione extintor, cinturón de seguridad, luces, alarma de reversa, claxon, torreta y espejos.",
+  "Verifique correcto funcionamiento de mecanismo de la dirección.",
+  "Verifique funcionamiento de indicadores y horómetro del equipo, reporte anomalías.",
+  "Verifique y revise el estado actual de llantas; si presentan desprendimiento o están sin dibujo, reportar al encargado (si son llantas de hule, revisar el tiempo de vida útil).",
+  "Verifique el cableado eléctrico; si presenta daño en los forros o calentamiento, reportar inmediatamente."
+];
+
+let stateGenerales = new Array(GENERALES.length).fill(null);
+let stateRechazo = new Array(RECHAZO.length).fill(null);
+
+function getParam(name){
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
+}
+
+function initEquipoSelect(){
+  const sel = document.getElementById('equipo');
+  EQUIPOS.forEach(code => {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = code;
+    sel.appendChild(opt);
+  });
+  const paramCode = getParam('equipo');
+  if(paramCode && EQUIPOS.includes(paramCode.toUpperCase())){
+    sel.value = paramCode.toUpperCase();
+  }
+  updateNameplate();
+  sel.addEventListener('change', updateNameplate);
+}
+
+function updateNameplate(){
+  const sel = document.getElementById('equipo');
+  document.getElementById('equipoDisplay').textContent = sel.value || '— seleccionar —';
+  document.getElementById('equipoNombre').textContent = sel.value ? (EQUIPO_NOMBRES[sel.value] || '') : '';
+  if(sel.value && !document.getElementById('noEconomico').value){
+    document.getElementById('noEconomico').value = sel.value.split('-')[0];
+  }
+}
+
+function renderConsumibles(){
+  const container = document.getElementById('consumibles');
+  container.innerHTML = '';
+  CONSUMIBLES.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'consumibles-row';
+    row.innerHTML = `
+      <div class="nombre">${c.nombre}</div>
+      <input type="number" min="0" step="0.5" id="cons_${c.id}" placeholder="0">
+      <div class="unidad">${c.unidad}</div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function renderItems(containerId, items, stateArr, okLabel, badLabel){
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  items.forEach((text, idx) => {
+    const row = document.createElement('div');
+    row.className = 'item';
+
+    const txt = document.createElement('div');
+    txt.className = 'item-text';
+    txt.textContent = text;
+
+    const group = document.createElement('div');
+    group.className = 'toggle-group';
+
+    const okBtn = document.createElement('button');
+    okBtn.type = 'button';
+    okBtn.className = 'toggle-btn';
+    okBtn.textContent = okLabel;
+
+    const badBtn = document.createElement('button');
+    badBtn.type = 'button';
+    badBtn.className = 'toggle-btn';
+    badBtn.textContent = badLabel;
+
+    function refresh(){
+      okBtn.classList.toggle('active-ok', stateArr[idx] === 'ok');
+      badBtn.classList.toggle('active-bad', stateArr[idx] === 'bad');
+    }
+
+    okBtn.addEventListener('click', () => { stateArr[idx] = (stateArr[idx]==='ok') ? null : 'ok'; refresh(); });
+    badBtn.addEventListener('click', () => { stateArr[idx] = (stateArr[idx]==='bad') ? null : 'bad'; refresh(); });
+
+    group.appendChild(okBtn);
+    group.appendChild(badBtn);
+    row.appendChild(txt);
+    row.appendChild(group);
+    container.appendChild(row);
+    refresh();
+  });
+}
+
+function todayISO(){
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+}
+
+const CORREO_MANTENIMIENTO = 'mantenimiento@zeomex.com.mx';
+
+function abrirCorreo(record){
+  const asunto = `Checklist Montacargas REP-EXT-02 - ${record.equipo} - ${record.fecha}`;
+
+  const lineas = [];
+  lineas.push('REVISIÓN DIARIA DE OPERADOR - MONTACARGAS (REP-EXT-02)');
+  lineas.push('========================================================');
+  lineas.push(`Equipo: ${record.equipo}`);
+  lineas.push(`No. Económico: ${record.noEconomico || '-'}`);
+  lineas.push(`Operador: ${record.operador}`);
+  lineas.push(`Fecha: ${record.fecha}`);
+  lineas.push(`Turno: ${record.turno || '-'}`);
+  lineas.push(`Horómetro inicial: ${record.horInicial || '-'}`);
+  lineas.push(`Horómetro final: ${record.horFinal || '-'}`);
+  lineas.push('');
+  lineas.push('CONSUMIBLES');
+  record.consumibles.forEach(c => {
+    lineas.push(`- ${c.nombre}: ${c.cantidad || '0'} ${c.unidad}`);
+  });
+  lineas.push('');
+  lineas.push('PUNTOS GENERALES (¿Está trabajando?)');
+  record.generales.forEach(g => {
+    const estado = g.estado === 'ok' ? 'BIEN' : (g.estado === 'bad' ? 'MAL' : 'SIN REVISAR');
+    lineas.push(`- [${estado}] ${g.punto}`);
+  });
+  lineas.push('');
+  lineas.push('CRITERIOS DE RECHAZO (¿Está en buenas condiciones?)');
+  record.rechazo.forEach(r => {
+    const estado = r.estado === 'ok' ? 'SI' : (r.estado === 'bad' ? 'NO' : 'SIN REVISAR');
+    lineas.push(`- [${estado}] ${r.punto}`);
+  });
+  lineas.push('');
+  lineas.push('COMENTARIOS / REPORTE DE FALLAS');
+  lineas.push(record.comentarios || '(sin comentarios)');
+
+  const cuerpo = lineas.join('\n');
+  const mailtoUrl = `mailto:${CORREO_MANTENIMIENTO}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+  window.location.href = mailtoUrl;
+}
+
+function descargarRespaldo(record){
+  const lineas = [];
+  lineas.push('REVISIÓN DIARIA DE OPERADOR - MONTACARGAS (REP-EXT-02)');
+  lineas.push('========================================================');
+  lineas.push(`Equipo: ${record.equipo}`);
+  lineas.push(`No. Económico: ${record.noEconomico || '-'}`);
+  lineas.push(`Operador: ${record.operador}`);
+  lineas.push(`Fecha: ${record.fecha}`);
+  lineas.push(`Turno: ${record.turno || '-'}`);
+  lineas.push(`Horómetro inicial: ${record.horInicial || '-'}`);
+  lineas.push(`Horómetro final: ${record.horFinal || '-'}`);
+  lineas.push('');
+  lineas.push('CONSUMIBLES');
+  record.consumibles.forEach(c => {
+    lineas.push(`- ${c.nombre}: ${c.cantidad || '0'} ${c.unidad}`);
+  });
+  lineas.push('');
+  lineas.push('PUNTOS GENERALES (¿Está trabajando?)');
+  record.generales.forEach(g => {
+    const estado = g.estado === 'ok' ? 'BIEN' : (g.estado === 'bad' ? 'MAL' : 'SIN REVISAR');
+    lineas.push(`- [${estado}] ${g.punto}`);
+  });
+  lineas.push('');
+  lineas.push('CRITERIOS DE RECHAZO (¿Está en buenas condiciones?)');
+  record.rechazo.forEach(r => {
+    const estado = r.estado === 'ok' ? 'SI' : (r.estado === 'bad' ? 'NO' : 'SIN REVISAR');
+    lineas.push(`- [${estado}] ${r.punto}`);
+  });
+  lineas.push('');
+  lineas.push('COMENTARIOS / REPORTE DE FALLAS');
+  lineas.push(record.comentarios || '(sin comentarios)');
+
+  const contenido = lineas.join('\n');
+  const blob = new Blob([contenido], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const fechaArchivo = record.fecha.replace(/\//g, '-');
+  const nombreArchivo = `checklist_${record.equipo}_${fechaArchivo}_${record.operador.replace(/\s+/g,'_')}.txt`;
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = nombreArchivo;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+async function submitChecklist(){
+  const btn = document.getElementById('submitBtn');
+  const statusMsg = document.getElementById('statusMsg');
+  const equipo = document.getElementById('equipo').value;
+  const operador = document.getElementById('operador').value.trim();
+
+  if(!equipo){
+    statusMsg.textContent = 'Selecciona un equipo antes de guardar.';
+    statusMsg.className = 'status-msg err';
+    return;
+  }
+  if(!operador){
+    statusMsg.textContent = 'Escribe el nombre del operador.';
+    statusMsg.className = 'status-msg err';
+    return;
+  }
+
+  const record = {
+    equipo,
+    operador,
+    noEconomico: document.getElementById('noEconomico').value.trim(),
+    horInicial: document.getElementById('horInicial').value.trim(),
+    horFinal: document.getElementById('horFinal').value.trim(),
+    fecha: document.getElementById('fecha').value || todayISO(),
+    turno: document.getElementById('turno').value.trim(),
+    consumibles: CONSUMIBLES.map(c => ({
+      nombre: c.nombre,
+      unidad: c.unidad,
+      cantidad: document.getElementById(`cons_${c.id}`).value.trim()
+    })),
+    generales: GENERALES.map((text, i) => ({ punto: text, estado: stateGenerales[i] })),
+    rechazo: RECHAZO.map((text, i) => ({ punto: text, estado: stateRechazo[i] })),
+    generales_flags: stateGenerales.filter(s => s === 'bad').length,
+    rechazo_flags: stateRechazo.filter(s => s === 'bad').length,
+    comentarios: document.getElementById('comentarios').value.trim()
+  };
+
+  btn.disabled = true;
+  statusMsg.textContent = 'Preparando...';
+  statusMsg.className = 'status-msg';
+
+  try{
+    statusMsg.textContent = record.generales_flags + record.rechazo_flags > 0
+      ? 'Revisión lista. Se detectaron anomalías — reporte a su jefe inmediato.'
+      : 'Revisión lista. Se guardó el respaldo y se abrió tu correo.';
+    statusMsg.className = 'status-msg ok';
+    descargarRespaldo(record);
+    abrirCorreo(record);
+  }catch(err){
+    statusMsg.textContent = 'Error al preparar la revisión. Intenta de nuevo.';
+    statusMsg.className = 'status-msg err';
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('fecha').value = todayISO();
+initEquipoSelect();
+renderConsumibles();
+renderItems('generales', GENERALES, stateGenerales, 'Bien', 'Mal');
+renderItems('rechazo', RECHAZO, stateRechazo, 'Sí', 'No');
+document.getElementById('submitBtn').addEventListener('click', submitChecklist);
+</script>
+</body>
+</html>
