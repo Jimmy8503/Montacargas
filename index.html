@@ -98,9 +98,10 @@
   }
   .nameplate .equipo-nombre{
     font-family:'Inter', sans-serif;
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 3px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--yellow);
+    margin-top: 5px;
   }
   select#equipo{
     background: var(--panel-alt);
@@ -375,13 +376,12 @@
       <label>Operador</label>
       <input type="text" id="operador" placeholder="Nombre completo">
     </div>
-  </div>
-  <div class="meta-row">
     <div class="meta-field">
       <label>Horómetro inicial</label>
       <input type="text" id="horInicial" placeholder="0000">
     </div>
   </div>
+
   <div class="meta-row">
     <div class="meta-field">
       <label>Fecha</label>
@@ -500,9 +500,6 @@ function updateNameplate(){
   const sel = document.getElementById('equipo');
   document.getElementById('equipoDisplay').textContent = sel.value || '— seleccionar —';
   document.getElementById('equipoNombre').textContent = sel.value ? (EQUIPO_NOMBRES[sel.value] || '') : '';
-  if(sel.value && !document.getElementById('noEconomico').value){
-    document.getElementById('noEconomico').value = sel.value.split('-')[0];
-  }
 }
 
 function renderConsumibles(){
@@ -578,12 +575,10 @@ function abrirCorreo(record){
   lineas.push('REVISIÓN DIARIA DE OPERADOR - MONTACARGAS (REP-EXT-02)');
   lineas.push('========================================================');
   lineas.push(`Equipo: ${record.equipo}`);
-  lineas.push(`No. Económico: ${record.noEconomico || '-'}`);
   lineas.push(`Operador: ${record.operador}`);
   lineas.push(`Fecha: ${record.fecha}`);
   lineas.push(`Turno: ${record.turno || '-'}`);
   lineas.push(`Horómetro inicial: ${record.horInicial || '-'}`);
-  lineas.push(`Horómetro final: ${record.horFinal || '-'}`);
   lineas.push('');
   lineas.push('CONSUMIBLES');
   record.consumibles.forEach(c => {
@@ -615,12 +610,10 @@ function descargarRespaldo(record){
   lineas.push('REVISIÓN DIARIA DE OPERADOR - MONTACARGAS (REP-EXT-02)');
   lineas.push('========================================================');
   lineas.push(`Equipo: ${record.equipo}`);
-  lineas.push(`No. Económico: ${record.noEconomico || '-'}`);
   lineas.push(`Operador: ${record.operador}`);
   lineas.push(`Fecha: ${record.fecha}`);
   lineas.push(`Turno: ${record.turno || '-'}`);
   lineas.push(`Horómetro inicial: ${record.horInicial || '-'}`);
-  lineas.push(`Horómetro final: ${record.horFinal || '-'}`);
   lineas.push('');
   lineas.push('CONSUMIBLES');
   record.consumibles.forEach(c => {
@@ -677,9 +670,7 @@ async function submitChecklist(){
   const record = {
     equipo,
     operador,
-    noEconomico: document.getElementById('noEconomico').value.trim(),
     horInicial: document.getElementById('horInicial').value.trim(),
-    horFinal: document.getElementById('horFinal').value.trim(),
     fecha: document.getElementById('fecha').value || todayISO(),
     turno: document.getElementById('turno').value.trim(),
     consumibles: CONSUMIBLES.map(c => ({
